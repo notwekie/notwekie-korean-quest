@@ -77,9 +77,11 @@ function speakKorean(value){
  const text=String(value||'').trim();if(!text)return;
  if(currentAudio){currentAudio.pause();currentAudio=null;}
  if('speechSynthesis' in window)speechSynthesis.cancel();
- const folder=audioFolderFor(text);
- if(!folder){fallbackKoreanSpeech(text);return;}
- const url=KOREAN_AUDIO_BASE+folder+'/'+encodeURIComponent(text)+'.mp3';
+ const soundMap={'ㅏ':'아','ㅓ':'어','ㅗ':'오','ㅜ':'우','ㅡ':'으','ㅣ':'이','ㄱ':'가','ㄴ':'나','ㄷ':'다','ㄹ':'라','ㅁ':'마','ㅂ':'바','ㅅ':'사','ㅇ':'아','ㅈ':'자','ㅊ':'차','ㅋ':'카','ㅌ':'타','ㅍ':'파','ㅎ':'하','ㅑ':'야','ㅕ':'여','ㅛ':'요','ㅠ':'유','ㅐ':'애','ㅔ':'에','ㅘ':'와','ㅝ':'워','ㄲ':'까','ㄸ':'따','ㅃ':'빠','ㅆ':'싸','ㅉ':'짜'};
+ const spoken=soundMap[text]||text;
+ const folder=audioFolderFor(spoken);
+ if(!folder){fallbackKoreanSpeech(spoken);return;}
+ const url=KOREAN_AUDIO_BASE+folder+'/'+encodeURIComponent(spoken)+'.mp3';
  const audio=new Audio(url);currentAudio=audio;
  audio.playbackRate=Number(document.getElementById('speechRate')?.value||0.9);
  audio.onerror=()=>{if(currentAudio===audio){currentAudio=null;fallbackKoreanSpeech(text);}};
