@@ -52,7 +52,7 @@ const lessonExamples={
  '05':[['까','kka'],['따','tta'],['빠','ppa'],['싸','ssa'],['짜','jja']],
  '06':[['간','gan'],['물','mul (water)'],['밤','bam (night)'],['산','san (mountain)']]
 };
-// Public Supabase audio. Upload UTF-8 Korean-named MP3 files into lesson-01, etc.
+// Public Supabase audio. Upload ASCII-safe Unicode-codepoint-named MP3 files into lesson-01, etc.
 const KOREAN_AUDIO_BASE='https://izrcghcolgqdbjfexori.supabase.co/storage/v1/object/public/korean-audio/';
 const KOREAN_AUDIO_TEST='안녕하세요. 한국어를 공부해요.';
 let koreanVoice=null, currentAudio=null;
@@ -81,7 +81,7 @@ function speakKorean(value){
  const spoken=soundMap[text]||text;
  const folder=audioFolderFor(spoken);
  if(!folder){fallbackKoreanSpeech(spoken);return;}
- const url=KOREAN_AUDIO_BASE+folder+'/'+encodeURIComponent(spoken)+'.mp3';
+ const url=KOREAN_AUDIO_BASE+folder+'/'+Array.from(spoken).map(c=>'u'+c.codePointAt(0).toString(16)).join('_')+'.mp3';
  const audio=new Audio(url);currentAudio=audio;
  audio.playbackRate=Number(document.getElementById('speechRate')?.value||0.9);
  audio.onerror=()=>{if(currentAudio===audio){currentAudio=null;fallbackKoreanSpeech(text);}};
